@@ -96,7 +96,13 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
     ⟨new_rows, ?_⟩
   else mx
   else mx)
-  sorry
+  refine(And.intro ?_ ?_)
+  .
+    rcases mx.2 with ⟨hf, hs⟩
+    rw [<-hf]
+    eapply Array.size_set
+  .
+
 
 
 /-
