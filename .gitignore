@@ -1,0 +1,17 @@
+/.lake
+
+# Lake/Lean build artifacts
+/build
+/*.olean
+/*.ilean
+/*.c
+/*.o
+/*.a
+/*.so
+/*.dylib
+
+# Editor and OS files
+.DS_Store
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
