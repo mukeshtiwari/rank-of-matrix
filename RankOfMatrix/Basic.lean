@@ -102,6 +102,15 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
     rw [<-hf]
     eapply Array.size_set
   .
+    intro row hr
+    rcases mx.2 with ⟨hf, hs⟩
+    refine(And.intro ?_ ?_)
+    .
+      intro p hp
+      sorry
+    .
+      sorry
+
 
 
 
