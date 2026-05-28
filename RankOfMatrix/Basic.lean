@@ -47,7 +47,8 @@ Fill the proofs using refine tactic?
 -/
 
 def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
-  @sparse_matrix K m n :=
+  @sparse_matrix K m n := by
+  refine(
   if hi : i < m then
   if hj : j < m then
     let rows := mx.1
@@ -55,19 +56,22 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     have hj' : i < rows.size := mx.2.1 ▸ hi
     have hk' : j < rows.size := mx.2.1 ▸ hj
     let new_rows := rows.swap i j
-    ⟨new_rows, by sorry⟩
+    ⟨new_rows, ?_⟩
   else mx
-  else mx
+  else mx)
+  sorry
 
 /- Multiply a row by a non-zero number. -/
 def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
-  (c : K) (f : K -> K -> K): @sparse_matrix K m n :=
+  (c : K) (f : K -> K -> K): @sparse_matrix K m n := by
+  refine(
   if i < m then
     let rows := mx.1
     let new_rows := rows.modify i
       (fun row => row.map (fun p => (p.1, f c p.2)))
-    ⟨new_rows, by sorry⟩
-  else mx
+    ⟨new_rows, ?_⟩
+  else mx)
+  sorry
 
 
 /-
@@ -75,7 +79,8 @@ Combine row i and row j by a linear combination `f`.
 It checks if the indices align and then merges the two rows by applying `f` to the values at matching column indices.
 -/
 def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
-  (f : K → K → K) : @sparse_matrix K m n :=
+  (f : K → K → K) : @sparse_matrix K m n := by
+  refine(
   if hi : i < m then
   if hj : j < m then
     let rows := mx.1
@@ -88,9 +93,11 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
         else if x.1 < y.1 then (x.1, f x.2 0)
         else (y.1, f 0 y.2)) row_j
     let new_rows := rows.set i new_row hi'
-    ⟨new_rows, by sorry⟩
+    ⟨new_rows, ?_⟩
   else mx
-  else mx
+  else mx)
+  sorry
+
 
 /-
 Perform Gaussian elimination to convert the matrix to
