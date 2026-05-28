@@ -63,10 +63,10 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
 def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
   (c : K) (f : K -> K -> K): @sparse_matrix K m n :=
   if i < m then
-  let rows := mx.1
-  let new_rows := rows.modify i
-    (fun row => row.map (fun p => (p.1, f c p.2)))
-  ⟨new_rows, by sorry⟩
+    let rows := mx.1
+    let new_rows := rows.modify i
+      (fun row => row.map (fun p => (p.1, f c p.2)))
+    ⟨new_rows, by sorry⟩
   else mx
 
 
