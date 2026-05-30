@@ -94,13 +94,25 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
     unfold new_rows
     eapply Array.size_modify
   · intro row hr
+    rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
+    subst hfa new_rows rows
+    simp at hr
+    have hmod :
+      row ∈ mxh ∨ ∃ r, r ∈ mxh ∧ row = r.map
+      (fun q => (q.1, f c q.2)) := by sorry
     refine(And.intro ?_ ?_)
     · intro p hp
-      rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
-      subst hfa new_rows rows
-      simp at hr
-      sorry
-    · sorry
+      rcases hmod with hrow | ⟨r, hrmem, rfl⟩
+      · exact (hsa row hrow).1 p hp
+      · rcases List.mem_map.mp hp with ⟨q, hq, hpeq⟩
+        have hq₁ : q.1 < n := (hsa r hrmem).1 q hq
+        rcases p with ⟨pa, pb⟩
+        simp; simp at hpeq
+        rcases hpeq with ⟨hpeq₁, hpeq₂⟩
+        rw [<-hpeq₁]
+        exact hq₁
+    . sorry
+
 
 
 /-
