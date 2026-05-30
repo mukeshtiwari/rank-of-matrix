@@ -60,26 +60,22 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
   else mx
   else mx)
   refine(And.intro ?_ ?_)
-  ·
-    rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
+  · rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
     subst hf
     eapply Array.size_swap
-  ·
-    intro row hr
+  · intro row hr
     refine(And.intro ?_ ?_)
-    ·
-      intro p hp
+    · intro p hp
       rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
       subst hfa new_rows rows
       simp at hi hj' hk' hr
       /- swap is not going to
         change the membersship.
         from row ∈ mxh.swap i j hj' hk' I can
-        infer row ∈ mxh by swap is involutive
+        infer row ∈ mxh
         -/
       sorry
-    ·
-      sorry
+    · sorry
 
 /- Multiply a row by a non-zero number. -/
 def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
@@ -92,23 +88,18 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
     ⟨new_rows, ?_⟩
   else mx)
   refine(And.intro ?_ ?_)
-  ·
-    rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
+  · rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
     subst hf
     unfold new_rows
     eapply Array.size_modify
-  ·
-    intro row hr
+  · intro row hr
     refine(And.intro ?_ ?_)
-    ·
-      intro p hp
+    · intro p hp
       rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
       subst hfa new_rows rows
       simp at hr
       sorry
-
-    ·
-      sorry
+    · sorry
 
 
 /-
@@ -134,20 +125,16 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
   else mx
   else mx)
   refine(And.intro ?_ ?_)
-  ·
-    rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
+  · rcases mx with ⟨mxh, ⟨hf, hs⟩⟩
     subst hf
     eapply Array.size_set
-  ·
-    intro row hr
+  · intro row hr
     rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
     refine(And.intro ?_ ?_)
-    ·
-      intro p hp
+    · intro p hp
       unfold new_rows at hr
       sorry
-    ·
-      sorry
+    · sorry
 
 
 
