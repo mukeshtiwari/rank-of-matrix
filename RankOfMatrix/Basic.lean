@@ -78,9 +78,47 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     · exact hsa.2
 
 
-/- Multiply a row by a non-zero number. -/
+/- This should exists somewhere in the library -/
+lemma mem_or_exists_map_of_mem_modify
+  {i : ℕ} {c : K} {f : K -> K -> K}
+  {row : List (ℕ × K)} {mxh : Array (List (ℕ × K))}
+  (hr : row ∈ mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2)))) :
+  row ∈ mxh ∨ ∃ r, r ∈ mxh ∧ row = r.map (fun q => (q.1, f c q.2)) := by
+  rcases (Array.mem_iff_getElem.mp hr) with ⟨k, hk, hkrow⟩
+  have hk' : k < mxh.size := by
+    simpa [Array.size_modify] using hk
+  by_cases hki : i = k
+  · right
+    refine ⟨mxh[k], ?_, ?_⟩
+    · exact Array.mem_iff_getElem.mpr ⟨k, hk', rfl⟩
+    · have hget :
+        (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
+          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) :=
+        Array.getElem_modify
+          (xs := mxh) (j := i) (i := k)
+          (f := fun row => row.map (fun p => (p.1, f c p.2))) (h := hk)
+      calc
+        row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
+        _ = (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := hget
+        _ = (mxh[k]).map (fun p => (p.1, f c p.2)) := by simp [hki]
+  · left
+    have hget :
+        (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
+          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) :=
+      Array.getElem_modify
+        (xs := mxh) (j := i) (i := k)
+        (f := fun row => row.map (fun p => (p.1, f c p.2))) (h := hk)
+    have : row = mxh[k] := by
+      calc
+        row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
+        _ = (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := hget
+        _ = mxh[k] := by simp [hki]
+    exact Array.mem_iff_getElem.mpr ⟨k, hk', this.symm⟩
+
+
+
 def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
-  (c : K) (f : K -> K -> K): @sparse_matrix K m n := by
+  (c : K) (f : K -> K -> K) : @sparse_matrix K m n := by
   refine(
   if i < m then
     let rows := mx.1
@@ -99,7 +137,8 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
     simp at hr
     have hmod :
       row ∈ mxh ∨ ∃ r, r ∈ mxh ∧ row = r.map
-      (fun q => (q.1, f c q.2)) := by sorry
+      (fun q => (q.1, f c q.2)) := by
+      exact mem_or_exists_map_of_mem_modify hr
     refine(And.intro ?_ ?_)
     · intro p hp
       rcases hmod with hrow | ⟨r, hrmem, rfl⟩
@@ -111,7 +150,9 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
         rcases hpeq with ⟨hpeq₁, hpeq₂⟩
         rw [<-hpeq₁]
         exact hq₁
-    . sorry
+    · rcases hmod with hrow | ⟨r, hrmem, rfl⟩
+      · exact (hsa row hrow).2
+      · sorry
 
 
 
