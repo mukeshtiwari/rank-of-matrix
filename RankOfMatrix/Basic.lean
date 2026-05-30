@@ -65,18 +65,18 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     subst hf
     eapply Array.size_swap
   · intro row hr
+    rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
+    subst hfa new_rows rows
+    have hperm : (row ∈ mxh <-> row ∈ mxh.swap i j hi hj) :=
+      Array.Perm.mem_iff (Array.Perm.symm (Array.swap_perm _ _))
+    have hr_mxh : row ∈ mxh := by
+      exact hperm.mpr hr
+    specialize hsa row hr_mxh
     refine(And.intro ?_ ?_)
     · intro p hp
-      rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
-      subst hfa new_rows rows
-      have hperm : (row ∈ mxh <-> row ∈ mxh.swap i j hi hj) :=
-        Array.Perm.mem_iff (Array.Perm.symm (Array.swap_perm _ _))
-      have hr_mxh : row ∈ mxh := by
-        exact hperm.mpr hr
-      specialize hsa row hr_mxh
-      rcases hsa with ⟨hrow_bound, _⟩
-      exact hrow_bound p hp
-    · sorry
+      exact hsa.1 p hp
+    · exact hsa.2
+
 
 /- Multiply a row by a non-zero number. -/
 def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
