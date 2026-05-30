@@ -93,10 +93,8 @@ lemma mem_or_exists_map_of_mem_modify
     · exact Array.mem_iff_getElem.mpr ⟨k, hk', rfl⟩
     · have hget :
         (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
-          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) :=
-        Array.getElem_modify
-          (xs := mxh) (j := i) (i := k)
-          (f := fun row => row.map (fun p => (p.1, f c p.2))) (h := hk)
+          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := by
+          rw [Array.getElem_modify]
       calc
         row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
         _ = (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := hget
@@ -104,10 +102,8 @@ lemma mem_or_exists_map_of_mem_modify
   · left
     have hget :
         (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
-          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) :=
-      Array.getElem_modify
-        (xs := mxh) (j := i) (i := k)
-        (f := fun row => row.map (fun p => (p.1, f c p.2))) (h := hk)
+          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := by
+          rw [Array.getElem_modify]
     have : row = mxh[k] := by
       calc
         row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
