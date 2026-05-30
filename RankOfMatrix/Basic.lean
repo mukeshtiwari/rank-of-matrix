@@ -69,7 +69,6 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     · intro p hp
       rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
       subst hfa new_rows rows
-      simp at *
       have hperm : (row ∈ mxh <-> row ∈ mxh.swap i j hi hj) :=
         Array.Perm.mem_iff (Array.Perm.symm (Array.swap_perm _ _))
       have hr_mxh : row ∈ mxh := by
