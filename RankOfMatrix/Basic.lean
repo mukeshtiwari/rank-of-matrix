@@ -46,6 +46,7 @@ We can just return the original matrix if they are not.
 Fill the proofs using refine tactic?
 -/
 
+
 def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
   @sparse_matrix K m n := by
   refine(
@@ -68,13 +69,14 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     · intro p hp
       rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
       subst hfa new_rows rows
-      simp at hi hj' hk' hr
-      /- swap is not going to
-        change the membersship.
-        from row ∈ mxh.swap i j hj' hk' I can
-        infer row ∈ mxh
-        -/
-      sorry
+      simp at *
+      have hperm : (row ∈ mxh <-> row ∈ mxh.swap i j hi hj) :=
+        Array.Perm.mem_iff (Array.Perm.symm (Array.swap_perm _ _))
+      have hr_mxh : row ∈ mxh := by
+        exact hperm.mpr hr
+      specialize hsa row hr_mxh
+      rcases hsa with ⟨hrow_bound, _⟩
+      exact hrow_bound p hp
     · sorry
 
 /- Multiply a row by a non-zero number. -/
