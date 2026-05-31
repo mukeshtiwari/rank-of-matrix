@@ -79,6 +79,7 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
 
 
 /- This should exists somewhere in the library -/
+omit [Field K] [DecidableEq K]
 lemma mem_or_exists_map_of_mem_modify
   {i : ℕ} {c : K} {f : K -> K -> K}
   {row : List (ℕ × K)} {mxh : Array (List (ℕ × K))}
@@ -148,7 +149,15 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
         exact hq₁
     · rcases hmod with hrow | ⟨r, hrmem, rfl⟩
       · exact (hsa row hrow).2
-      · sorry
+      ·
+        exact List.Pairwise.map
+          (f := fun q : ℕ × K => (q.1, f c q.2))
+          (R := fun a b : ℕ × K => a.1 < b.1)
+          (S := fun a b : ℕ × K => a.1 < b.1)
+          (H := by
+            intro a b hab
+            simpa using hab)
+          ((hsa r hrmem).2)
 
 
 
