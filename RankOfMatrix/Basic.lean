@@ -6,13 +6,6 @@ variable {K : Type _} [Field K]
   [DecidableEq K]
 
 /-
-  We invite you to spend between 2 and 4 hours exploring
-  this problem. You may wish to define a sparse
-  matrix type as part of the exercise. Please note
-  that you are not expected to provide a fully
-  functional implementation, we just want to learn about
-  how you would approach this task.
-
   Datastructure for sparse matrix: a sigma type in which we
   store a list of rows, where each row is
   a list of pairs (column index, value). We only store
@@ -172,8 +165,6 @@ def merge_rows (f : K → K → K) (xs ys : List (ℕ × K)) : List (ℕ × K) :
       else
         (y1, f 0 y2) :: merge_rows f ((x1, x2) :: xs') ys'
   termination_by xs.length + ys.length
-
-
 
 
 /-
