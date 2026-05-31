@@ -79,7 +79,6 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
 
 
 /- This should exists somewhere in the library -/
-omit [Field K] [DecidableEq K]
 lemma mem_or_exists_map_of_mem_modify
   {i : ℕ} {c : K} {f : K -> K -> K}
   {row : List (ℕ × K)} {mxh : Array (List (ℕ × K))}
@@ -191,9 +190,12 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
     refine(And.intro ?_ ?_)
     · intro p hp
       unfold new_rows at hr
-      sorry
+      have hrow : row ∈ rows ∨ row = new_row := Array.mem_or_eq_of_mem_set hr
+      rcases hrow with hrow_old | rfl
+      · exact (hsa row hrow_old).1 p hp
+      · rcases List.mem_iff_getElem.mp hp with ⟨k, hk, hk_eq⟩
+        sorry
     · sorry
-
 
 
 
