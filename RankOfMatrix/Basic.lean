@@ -159,6 +159,23 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
 
 
 
+/- Library function for this? -/
+def merge_rows (f : K → K → K) (xs ys : List (ℕ × K)) : List (ℕ × K) :=
+  match xs, ys with
+  | [], ys => List.map (fun p => (p.1, f 0 p.2)) ys
+  | xs, [] => List.map (fun p => (p.1, f p.2 0)) xs
+  | (x1, x2) :: xs', (y1, y2) :: ys' =>
+      if x1 = y1 then
+        (x1, f x2 y2) :: merge_rows f xs' ys'
+      else if x1 < y1 then
+        (x1, f x2 0) :: merge_rows f xs' ((y1, y2) :: ys')
+      else
+        (y1, f 0 y2) :: merge_rows f ((x1, x2) :: xs') ys'
+  termination_by xs.length + ys.length
+
+
+
+
 /-
 Combine row i and row j by a linear combination `f`.
 It checks if the indices align and then merges the two rows by applying `f` to the values at matching column indices.
@@ -173,10 +190,7 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
     have hj' : j < rows.size := mx.2.1 ▸ hj
     let row_i := rows[i]'hi'
     let row_j := rows[j]'hj'
-    let new_row := row_i.zipWith
-      (fun x y => if x.1 = y.1 then (x.1, f x.2 y.2)
-        else if x.1 < y.1 then (x.1, f x.2 0)
-        else (y.1, f 0 y.2)) row_j
+    let new_row := merge_rows f row_i row_j
     let new_rows := rows.set i new_row hi'
     ⟨new_rows, ?_⟩
   else mx
