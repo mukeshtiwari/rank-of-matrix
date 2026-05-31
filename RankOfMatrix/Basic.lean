@@ -199,9 +199,10 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
 
 
 
+
 /-
 Perform Gaussian elimination to convert the matrix to
-Row Echelon Form (REF). Returns the REF matrix and the rank.
+Row Echelon Form (REF). Returns the REF matrix .
 -/
 def gaussian_elimination {m n : ℕ} (mx : @sparse_matrix K m n) :
     @sparse_matrix K m n :=
