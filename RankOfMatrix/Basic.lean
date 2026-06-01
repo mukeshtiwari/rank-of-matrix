@@ -71,38 +71,22 @@ def swap_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ) :
     · exact hsa.2
 
 
-/- This should exists somewhere in the library -/
+/- This should exists somewhere in the library.-/
+omit [Field K] [DecidableEq K] in
 lemma mem_or_exists_map_of_mem_modify
-  {i : ℕ} {c : K} {f : K -> K -> K}
+  {i : ℕ} {c : K} {f : K → K → K}
   {row : List (ℕ × K)} {mxh : Array (List (ℕ × K))}
-  (hr : row ∈ mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2)))) :
+  (hr : row ∈ mxh.modify i (fun r => r.map (fun p => (p.1, f c p.2)))) :
   row ∈ mxh ∨ ∃ r, r ∈ mxh ∧ row = r.map (fun q => (q.1, f c q.2)) := by
-  rcases (Array.mem_iff_getElem.mp hr) with ⟨k, hk, hkrow⟩
+  rcases Array.mem_iff_getElem.mp hr with ⟨k, hk, rfl⟩
   have hk' : k < mxh.size := by
     simpa [Array.size_modify] using hk
   by_cases hki : i = k
   · right
-    refine ⟨mxh[k], ?_, ?_⟩
-    · exact Array.mem_iff_getElem.mpr ⟨k, hk', rfl⟩
-    · have hget :
-        (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
-          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := by
-          rw [Array.getElem_modify]
-      calc
-        row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
-        _ = (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := hget
-        _ = (mxh[k]).map (fun p => (p.1, f c p.2)) := by simp [hki]
+    refine ⟨mxh[k], Array.mem_iff_getElem.mpr ⟨k, hk', rfl⟩, ?_⟩
+    simp [Array.getElem_modify, hki]
   · left
-    have hget :
-        (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] =
-          (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := by
-          rw [Array.getElem_modify]
-    have : row = mxh[k] := by
-      calc
-        row = (mxh.modify i (fun row => row.map (fun p => (p.1, f c p.2))))[k] := hkrow.symm
-        _ = (if i = k then (mxh[k]).map (fun p => (p.1, f c p.2)) else mxh[k]) := hget
-        _ = mxh[k] := by simp [hki]
-    exact Array.mem_iff_getElem.mpr ⟨k, hk', this.symm⟩
+    exact Array.mem_iff_getElem.mpr ⟨k, hk', by simp [Array.getElem_modify, hki]⟩
 
 
 
@@ -149,7 +133,6 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
             intro a b hab
             simpa using hab)
           ((hsa r hrmem).2)
-
 
 
 /- Library function for this? -/
