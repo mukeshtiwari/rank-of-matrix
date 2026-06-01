@@ -153,17 +153,17 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
 
 
 /- Library function for this? -/
-def merge_rows (f : K → K → K) (xs ys : List (ℕ × K)) : List (ℕ × K) :=
+def merge_rows (xs ys : List (ℕ × K)) (f : K → K → K) : List (ℕ × K) :=
   match xs, ys with
   | [], ys => List.map (fun p => (p.1, f 0 p.2)) ys
   | xs, [] => List.map (fun p => (p.1, f p.2 0)) xs
   | (x1, x2) :: xs', (y1, y2) :: ys' =>
       if x1 = y1 then
-        (x1, f x2 y2) :: merge_rows f xs' ys'
+        (x1, f x2 y2) :: merge_rows xs' ys' f
       else if x1 < y1 then
-        (x1, f x2 0) :: merge_rows f xs' ((y1, y2) :: ys')
+        (x1, f x2 0) :: merge_rows xs' ((y1, y2) :: ys') f
       else
-        (y1, f 0 y2) :: merge_rows f ((x1, x2) :: xs') ys'
+        (y1, f 0 y2) :: merge_rows ((x1, x2) :: xs') ys' f
   termination_by xs.length + ys.length
 
 
@@ -181,7 +181,7 @@ def combine_two_rows {m n : ℕ} (mx : @sparse_matrix K m n) (i j : ℕ)
     have hj' : j < rows.size := mx.2.1 ▸ hj
     let row_i := rows[i]'hi'
     let row_j := rows[j]'hj'
-    let new_row := merge_rows f row_i row_j
+    let new_row := merge_rows row_i row_j f
     let new_rows := rows.set i new_row hi'
     ⟨new_rows, ?_⟩
   else mx
