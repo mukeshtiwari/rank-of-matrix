@@ -107,7 +107,7 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
   · intro row hr
     rcases mx with ⟨mxh, ⟨hfa, hsa⟩⟩
     subst hfa new_rows rows
-    simp at hr
+    simp only at hr
     have hmod :
       row ∈ mxh ∨ ∃ r, r ∈ mxh ∧ row = r.map
       (fun q => (q.1, f c q.2)) := by
@@ -119,7 +119,8 @@ def scale_row {m n : ℕ} (mx : @sparse_matrix K m n) (i : ℕ)
       · rcases List.mem_map.mp hp with ⟨q, hq, hpeq⟩
         have hq₁ : q.1 < n := (hsa r hrmem).1 q hq
         rcases p with ⟨pa, pb⟩
-        simp; simp at hpeq
+        simp only [gt_iff_lt]
+        simp only [Prod.mk.injEq] at hpeq
         rcases hpeq with ⟨hpeq₁, hpeq₂⟩
         rw [<-hpeq₁]
         exact hq₁
